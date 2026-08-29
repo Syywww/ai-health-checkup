@@ -48,18 +48,6 @@
             <artifactId>health-framework</artifactId>
         </dependency>
 
-        <!-- 定时任务-->
-        <dependency>
-            <groupId>com.health</groupId>
-            <artifactId>health-quartz</artifactId>
-        </dependency>
-
-        <!-- 代码生成-->
-        <dependency>
-            <groupId>com.health</groupId>
-            <artifactId>health-generator</artifactId>
-        </dependency>
-
         <!-- 预约管理-->
         <dependency>
             <groupId>com.health</groupId>

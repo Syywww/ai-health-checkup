@@ -142,20 +142,6 @@
                 <version>${kaptcha.version}</version>
             </dependency>
 
-            <!-- 定时任务-->
-            <dependency>
-                <groupId>com.health</groupId>
-                <artifactId>health-quartz</artifactId>
-                <version>${health.version}</version>
-            </dependency>
-
-            <!-- 代码生成-->
-            <dependency>
-                <groupId>com.health</groupId>
-                <artifactId>health-generator</artifactId>
-                <version>${health.version}</version>
-            </dependency>
-
             <!-- 核心模块-->
             <dependency>
                 <groupId>com.health</groupId>
@@ -191,8 +177,6 @@
         <module>health-admin</module>
         <module>health-framework</module>
         <module>health-system</module>
-        <module>health-quartz</module>
-        <module>health-generator</module>
         <module>health-common</module>
         <module>health-reservation</module>
         <module>health-ai</module>

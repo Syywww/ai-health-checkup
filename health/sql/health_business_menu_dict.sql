@@ -72,14 +72,6 @@ insert into sys_menu values('2104', '会员修改', '2101', '3', '', '', '', '',
 insert into sys_menu values('2105', '会员删除', '2101', '4', '', '', '', '', 1, 0, 'F', '0', '0', 'member:member:remove', '#', 'admin', sysdate(), '', null, '');
 insert into sys_menu values('2106', '会员导出', '2101', '5', '', '', '', '', 1, 0, 'F', '0', '0', 'member:member:export', '#', 'admin', sysdate(), '', null, '');
 
--- 体检记录录入
-insert into sys_menu values('2111', '体检记录', '2100', '2', 'upload', 'member/upload', '', '', 1, 0, 'C', '0', '0', 'member:examination:list', 'documentation', 'admin', sysdate(), '', null, '体检记录菜单');
-insert into sys_menu values('2112', '体检记录查询', '2111', '1', '', '', '', '', 1, 0, 'F', '0', '0', 'member:examination:query', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2113', '体检记录新增', '2111', '2', '', '', '', '', 1, 0, 'F', '0', '0', 'member:examination:add', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2114', '体检记录修改', '2111', '3', '', '', '', '', 1, 0, 'F', '0', '0', 'member:examination:edit', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2115', '体检记录删除', '2111', '4', '', '', '', '', 1, 0, 'F', '0', '0', 'member:examination:remove', '#', 'admin', sysdate(), '', null, '');
-insert into sys_menu values('2116', '体检记录导出', '2111', '5', '', '', '', '', 1, 0, 'F', '0', '0', 'member:examination:export', '#', 'admin', sysdate(), '', null, '');
-
 -- 体检统计
 insert into sys_menu values('2121', '体检统计', '2100', '3', 'statistics', 'member/statistics', '', '', 1, 0, 'C', '0', '0', 'member:statistics:list', 'chart', 'admin', sysdate(), '', null, '体检统计菜单');
 
@@ -88,6 +80,9 @@ insert into sys_menu values('2200', 'AI 助手', '0', '3', 'ai', NULL, '', '', 1
 
 -- AI 对话
 insert into sys_menu values('2201', 'AI 对话', '2200', '1', 'chat', 'ai/chat', '', '', 1, 0, 'C', '0', '0', 'ai:chat:list', 'message', 'admin', sysdate(), '', null, 'AI 对话菜单');
+
+-- 小智语音助手
+insert into sys_menu values('2202', '小智语音助手', '2200', '2', 'xiaozhi', 'ai/xiaozhi/index', '', '', 1, 0, 'C', '0', '0', 'ai:xiaozhi:list', 'microphone', 'admin', sysdate(), '', null, '小智语音助手菜单');
 
 -- ----------------------------------------------------------------------------
 -- 二、普通角色（role_id=2）授权：若使用非 admin 账号演示，需关联业务菜单。
@@ -132,15 +127,10 @@ insert into sys_role_menu values('2', '2103');
 insert into sys_role_menu values('2', '2104');
 insert into sys_role_menu values('2', '2105');
 insert into sys_role_menu values('2', '2106');
-insert into sys_role_menu values('2', '2111');
-insert into sys_role_menu values('2', '2112');
-insert into sys_role_menu values('2', '2113');
-insert into sys_role_menu values('2', '2114');
-insert into sys_role_menu values('2', '2115');
-insert into sys_role_menu values('2', '2116');
 insert into sys_role_menu values('2', '2121');
 insert into sys_role_menu values('2', '2200');
 insert into sys_role_menu values('2', '2201');
+insert into sys_role_menu values('2', '2202');
 
 -- ----------------------------------------------------------------------------
 -- 三、业务字典（sys_dict_type + sys_dict_data）
@@ -155,3 +145,14 @@ insert into sys_dict_data values(31, 2, '检验', '2', 'health_type', '', 'warni
 insert into sys_dict_data values(32, 1, '不限', '0', 'health_sex', '', 'info', 'Y', '0', 'admin', sysdate(), '', null, '不限性别');
 insert into sys_dict_data values(33, 2, '男', '1', 'health_sex', '', 'primary', 'N', '0', 'admin', sysdate(), '', null, '适用男');
 insert into sys_dict_data values(34, 3, '女', '2', 'health_sex', '', 'danger', 'N', '0', 'admin', sysdate(), '', null, '适用女');
+
+-- ----------------------------------------------------------------------------
+-- 四、删除无用功能（菜单迁移记录：在 ry_20260417.sql 基础菜单 + 上述业务菜单基础上清理）
+--     1) 系统监控整树（在线用户/定时任务/数据监控/服务监控/缓存监控，含缓存列表）
+--     2) 系统工具整树（表单构建/代码生成/系统接口）—— 已删后端 health-generator 模块
+--     3) 若依官网外链
+--     4) 体检记录菜单（保留体检统计 2121）—— 已删前端 upload 页与 ExaminationController
+--     注意：后端定时任务 health-quartz 模块亦已删除，sys_job 历史表保留。
+-- ----------------------------------------------------------------------------
+delete from sys_role_menu where menu_id in (2,109,110,111,112,113,114,3,115,116,117,4,2111,2112,2113,2114,2115,2116);
+delete from sys_menu where menu_id in (2,109,110,111,112,113,114,3,115,116,117,4,2111,2112,2113,2114,2115,2116);
