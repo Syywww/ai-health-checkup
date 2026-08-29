@@ -45,7 +45,33 @@ public class Appointment extends BaseEntity
     @Excel(name = "预约来源")
     private String source;
 
-    public void setId(Long id) 
+    /** 会员姓名（关联查询，非表字段） */
+    private String memberName;
+
+    /** 套餐名称（关联查询，非表字段） */
+    private String setmealName;
+
+    public String getMemberName()
+    {
+        return memberName;
+    }
+
+    public void setMemberName(String memberName)
+    {
+        this.memberName = memberName;
+    }
+
+    public String getSetmealName()
+    {
+        return setmealName;
+    }
+
+    public void setSetmealName(String setmealName)
+    {
+        this.setmealName = setmealName;
+    }
+
+    public void setId(Long id)
     {
         this.id = id;
     }
