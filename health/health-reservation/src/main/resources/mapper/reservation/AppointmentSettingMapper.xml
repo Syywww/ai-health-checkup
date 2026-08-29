@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.health.reservation.mapper.AppointmentSettingMapper">
+    
+    <resultMap type="AppointmentSetting" id="AppointmentSettingResult">
+        <result property="id"    column="id"    />
+        <result property="settingDate"    column="setting_date"    />
+        <result property="maxCount"    column="max_count"    />
+        <result property="reservedCount"    column="reserved_count"    />
+        <result property="createBy"    column="create_by"    />
+        <result property="createTime"    column="create_time"    />
+        <result property="updateBy"    column="update_by"    />
+        <result property="updateTime"    column="update_time"    />
+    </resultMap>
+
+    <sql id="selectAppointmentSettingVo">
+        select id, setting_date, max_count, reserved_count, create_by, create_time, update_by, update_time from appointment_setting
+    </sql>
+
+    <select id="selectAppointmentSettingList" parameterType="AppointmentSetting" resultMap="AppointmentSettingResult">
+        <include refid="selectAppointmentSettingVo"/>
+        <where>  
+            <if test="settingDate != null "> and setting_date = #{settingDate}</if>
+            <if test="maxCount != null "> and max_count = #{maxCount}</if>
+        </where>
+    </select>
+    
+    <select id="selectAppointmentSettingById" parameterType="Long" resultMap="AppointmentSettingResult">
+        <include refid="selectAppointmentSettingVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertAppointmentSetting" parameterType="AppointmentSetting" useGeneratedKeys="true" keyProperty="id">
+        insert into appointment_setting
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="settingDate != null">setting_date,</if>
+            <if test="maxCount != null">max_count,</if>
+            <if test="createBy != null">create_by,</if>
+            <if test="createTime != null">create_time,</if>
+            <if test="updateBy != null">update_by,</if>
+            <if test="updateTime != null">update_time,</if>
+         </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="settingDate != null">#{settingDate},</if>
+            <if test="maxCount != null">#{maxCount},</if>
+            <if test="createBy != null">#{createBy},</if>
+            <if test="createTime != null">#{createTime},</if>
+            <if test="updateBy != null">#{updateBy},</if>
+            <if test="updateTime != null">#{updateTime},</if>
+         </trim>
+    </insert>
+
+    <update id="updateAppointmentSetting" parameterType="AppointmentSetting">
+        update appointment_setting
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="settingDate != null">setting_date = #{settingDate},</if>
+            <if test="maxCount != null">max_count = #{maxCount},</if>
+            <if test="createBy != null">create_by = #{createBy},</if>
+            <if test="createTime != null">create_time = #{createTime},</if>
+            <if test="updateBy != null">update_by = #{updateBy},</if>
+            <if test="updateTime != null">update_time = #{updateTime},</if>
+        </trim>
+        where id = #{id}
+    </update>
+
+    <delete id="deleteAppointmentSettingById" parameterType="Long">
+        delete from appointment_setting where id = #{id}
+    </delete>
+
+    <delete id="deleteAppointmentSettingByIds" parameterType="String">
+        delete from appointment_setting where id in
+        <foreach item="id" collection="array" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </delete>
+
+    <!-- 根据年月查询（日历按月展示） -->
+    <select id="selectByYearMonth" resultMap="AppointmentSettingResult">
+        <include refid="selectAppointmentSettingVo"/>
+        where DATE_FORMAT(setting_date, '%Y-%m') = #{yearMonth}
+        order by setting_date
+    </select>
+
+    <!-- 根据放号日期查询 -->
+    <select id="selectBySettingDate" parameterType="java.util.Date" resultMap="AppointmentSettingResult">
+        <include refid="selectAppointmentSettingVo"/>
+        where setting_date = #{settingDate}
+    </select>
+
+    <!-- Excel 导入批量新增 -->
+    <insert id="insertBatch" useGeneratedKeys="true" keyProperty="id">
+        insert into appointment_setting (setting_date, max_count, reserved_count, create_time)
+        values
+        <foreach collection="list" item="item" separator=",">
+            (#{item.settingDate}, #{item.maxCount}, 0, sysdate())
+        </foreach>
+    </insert>
+
+    <!-- 已预约人数原子 +1（未满才成功，避免并发超卖） -->
+    <update id="increaseReservedCount" parameterType="Long">
+        update appointment_setting
+        set reserved_count = reserved_count + 1
+        where id = #{id} and reserved_count &lt; max_count
+    </update>
+</mapper>
