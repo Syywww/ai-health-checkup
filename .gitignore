@@ -33,6 +33,15 @@ pnpm-debug.log*
 # 单元测试覆盖
 tests/**/coverage/
 
+# ==================== Python（xiaozhi 语音助手） ====================
+
+# 本地配置（含阿里云通义 API Key，绝不入库）
+xiaozhi/.env
+xiaozhi/.venv/
+xiaozhi/venv/
+__pycache__/
+*.pyc
+
 # ==================== 日志 ====================
 
 logs/
