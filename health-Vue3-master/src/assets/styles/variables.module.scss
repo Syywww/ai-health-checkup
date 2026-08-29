@@ -14,11 +14,11 @@ $menuActiveText: #409eff;
 $menuBg: #1a1f2e;
 $menuHover: #263445;
 
-// 浅色主题theme-light
+// 浅色主题theme-light（青绿医疗风）
 $menuLightBg: #ffffff;
-$menuLightHover: #f0f1f5;
-$menuLightText: #303133;
-$menuLightActiveText: #409EFF;
+$menuLightHover: #f1f7f5;
+$menuLightText: #3d4a46;
+$menuLightActiveText: #52b6a4;
 
 // 基础变量
 $base-sidebar-width: 200px;
@@ -31,12 +31,12 @@ $base-menu-background: #1a1f2e;
 $base-sub-menu-background: #141824;
 $base-sub-menu-hover: rgba(255,255,255,.06);
 
-// 组件变量
-$--color-primary: #409EFF;
-$--color-success: #67C23A;
-$--color-warning: #E6A23C;
-$--color-danger: #F56C6C;
-$--color-info: #909399;
+// 组件变量（柔和青绿医疗风）
+$--color-primary: #52B6A4;
+$--color-success: #81C784;
+$--color-warning: #FFB74D;
+$--color-danger: #E57373;
+$--color-info: #90A4AE;
 
 :export {
   menuText: $menuText;
@@ -71,10 +71,32 @@ $--color-info: #909399;
   --sidebar-bg: #{$menuBg};
   --sidebar-text: #{$menuText};
   --menu-hover: #{$menuHover};
-  
+
   --navbar-bg: #ffffff;
   --navbar-text: #303133;
-  
+
+  /* 全局背景（柔和米白带青） */
+  --page-bg: #f4f9f7;
+
+  /* Element Plus 主题色覆盖（青绿医疗风） */
+  --el-color-primary: #52b6a4;
+  --el-color-primary-light-3: #87d0c2;
+  --el-color-primary-light-5: #b5e2d9;
+  --el-color-primary-light-7: #dcf1ec;
+  --el-color-primary-light-8: #e7f5f1;
+  --el-color-primary-light-9: #f1f9f7;
+  --el-color-primary-dark-2: #34927f;
+  --el-color-success: #81c784;
+  --el-color-warning: #ffb74d;
+  --el-color-danger: #e57373;
+  --el-color-error: #e57373;
+  --el-color-info: #90a4ae;
+
+  /* 圆角柔和化 */
+  --el-border-radius-base: 10px;
+  --el-border-radius-small: 6px;
+  --el-border-radius-round: 20px;
+
   /* splitpanes default-theme 变量 */
   --splitpanes-default-bg: #ffffff;
 

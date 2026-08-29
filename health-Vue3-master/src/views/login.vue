@@ -1,59 +1,65 @@
 <template>
   <div class="login">
-    <el-form ref="loginRef" :model="loginForm" :rules="loginRules" class="login-form">
-      <h3 class="title">{{ title }}</h3>
-      <el-form-item prop="username">
-        <el-input
-          v-model="loginForm.username"
-          type="text"
-          size="large"
-          auto-complete="off"
-          placeholder="账号"
-        >
-          <template #prefix><svg-icon icon-class="user" class="el-input__icon input-icon" /></template>
-        </el-input>
-      </el-form-item>
-      <el-form-item prop="password">
-        <el-input
-          v-model="loginForm.password"
-          type="password"
-          size="large"
-          auto-complete="off"
-          placeholder="密码"
-          @keyup.enter="handleLogin"
-        >
-          <template #prefix><svg-icon icon-class="password" class="el-input__icon input-icon" /></template>
-        </el-input>
-      </el-form-item>
-      <el-form-item prop="code" v-if="captchaEnabled">
-        <el-input
-          v-model="loginForm.code"
-          size="large"
-          auto-complete="off"
-          placeholder="验证码"
-          style="width: 63%"
-          @keyup.enter="handleLogin"
-        >
-          <template #prefix><svg-icon icon-class="validCode" class="el-input__icon input-icon" /></template>
-        </el-input>
-        <div class="login-code">
-          <img :src="codeUrl" @click="getCode" class="login-code-img"/>
-        </div>
-      </el-form-item>
-      <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">记住密码</el-checkbox>
-      <el-form-item style="width:100%;">
-        <el-button
-          :loading="loading"
-          size="large"
-          type="primary"
-          style="width:100%;"
-          @click.prevent="handleLogin"
-        >
-          <span v-if="!loading">登 录</span>
-          <span v-else>登 录 中...</span>
-        </el-button>
-      </el-form-item>
-    </el-form>
+    <div class="login-card">
+      <div class="login-brand">
+        <div class="login-logo">康</div>
+        <h3 class="title">{{ title }}</h3>
+        <p class="subtitle">健康体检 · 预约管理 · 一站式服务</p>
+      </div>
+      <el-form ref="loginRef" :model="loginForm" :rules="loginRules" class="login-form">
+        <el-form-item prop="username">
+          <el-input
+            v-model="loginForm.username"
+            type="text"
+            size="large"
+            auto-complete="off"
+            placeholder="账号"
+          >
+            <template #prefix><svg-icon icon-class="user" class="el-input__icon input-icon" /></template>
+          </el-input>
+        </el-form-item>
+        <el-form-item prop="password">
+          <el-input
+            v-model="loginForm.password"
+            type="password"
+            size="large"
+            auto-complete="off"
+            placeholder="密码"
+            @keyup.enter="handleLogin"
+          >
+            <template #prefix><svg-icon icon-class="password" class="el-input__icon input-icon" /></template>
+          </el-input>
+        </el-form-item>
+        <el-form-item prop="code" v-if="captchaEnabled">
+          <el-input
+            v-model="loginForm.code"
+            size="large"
+            auto-complete="off"
+            placeholder="验证码"
+            style="width: 63%"
+            @keyup.enter="handleLogin"
+          >
+            <template #prefix><svg-icon icon-class="validCode" class="el-input__icon input-icon" /></template>
+          </el-input>
+          <div class="login-code">
+            <img :src="codeUrl" @click="getCode" class="login-code-img"/>
+          </div>
+        </el-form-item>
+        <el-checkbox v-model="loginForm.rememberMe" style="margin:0px 0px 25px 0px;">记住密码</el-checkbox>
+        <el-form-item style="width:100%;">
+          <el-button
+            :loading="loading"
+            size="large"
+            type="primary"
+            style="width:100%;"
+            @click.prevent="handleLogin"
+          >
+            <span v-if="!loading">登 录</span>
+            <span v-else>登 录 中...</span>
+          </el-button>
+        </el-form-item>
+      </el-form>
+    </div>
     <!--  底部  -->
     <div class="el-login-footer">
       <span>{{ footerContent }}</span>
@@ -166,33 +172,73 @@ getCookie()
   justify-content: center;
   align-items: center;
   height: 100%;
-  background-image: url("../assets/images/login-background.jpg");
-  background-size: cover;
+  position: relative;
+  /* 柔和青绿医疗渐变 */
+  background: linear-gradient(135deg, #e3f4ef 0%, #f4f9f7 45%, #e8f5f2 100%);
 }
-.title {
-  margin: 0px auto 30px auto;
+
+.login-card {
+  width: 400px;
+  padding: 34px 34px 20px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(82, 182, 164, 0.15);
+  border-radius: 22px;
+  box-shadow: 0 12px 40px rgba(82, 182, 164, 0.12);
+  z-index: 1;
+  box-sizing: border-box;
+}
+
+.login-brand {
   text-align: center;
-  color: #707070;
+  margin-bottom: 26px;
+}
+
+.login-logo {
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 14px;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #52b6a4 0%, #7ed3c4 100%);
+  color: #fff;
+  font-size: 26px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 8px 20px rgba(82, 182, 164, 0.3);
+}
+
+.title {
+  margin: 0 0 6px;
+  font-size: 20px;
+  font-weight: 600;
+  color: #2c4a42;
+  letter-spacing: 1px;
+}
+
+.subtitle {
+  margin: 0;
+  font-size: 12px;
+  color: #8aa89f;
+  letter-spacing: 2px;
 }
 
 .login-form {
-  border-radius: 6px;
-  background: #ffffff;
-  width: 400px;
-  padding: 25px 25px 5px 25px;
-  z-index: 1;
+  width: 100%;
   .el-input {
-    height: 40px;
+    height: 42px;
     input {
-      height: 40px;
+      height: 42px;
     }
   }
   .input-icon {
-    height: 39px;
+    height: 41px;
     width: 14px;
     margin-left: 0px;
   }
 }
+
 .login-tip {
   font-size: 13px;
   text-align: center;
@@ -214,7 +260,7 @@ getCookie()
   bottom: 0;
   width: 100%;
   text-align: center;
-  color: #fff;
+  color: #7fa89d;
   font-family: Arial;
   font-size: 12px;
   letter-spacing: 1px;
@@ -225,10 +271,13 @@ getCookie()
 }
 
 html.dark .login {
-  background-image: linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)), url("../assets/images/login-background.jpg");
-  .login-form {
-    background: var(--el-bg-color-overlay) !important;
+  background: linear-gradient(135deg, #16231f 0%, #1c2b26 50%, #1a2722 100%);
+  .login-card {
+    background: var(--el-bg-color-overlay);
+    border-color: rgba(82, 182, 164, 0.25);
     box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
   }
+  .title { color: #dcece7; }
+  .subtitle { color: #6d8a81; }
 }
 </style>

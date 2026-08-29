@@ -5,13 +5,92 @@
 @use './btn.scss';
 @use './ruoyi.scss';
 
+:root {
+  /* 柔和青绿医疗风 · Element Plus 主题覆盖 */
+  --el-color-primary: #52b6a4;
+  --el-color-primary-light-3: #87d0c2;
+  --el-color-primary-light-5: #b5e2d9;
+  --el-color-primary-light-7: #dcf1ec;
+  --el-color-primary-light-8: #e7f5f1;
+  --el-color-primary-light-9: #f1f9f7;
+  --el-color-primary-dark-2: #34927f;
+  --el-color-success: #81c784;
+  --el-color-warning: #ffb74d;
+  --el-color-danger: #e57373;
+  --el-color-error: #e57373;
+  --el-color-info: #90a4ae;
+
+  --el-border-radius-base: 10px;
+  --el-border-radius-small: 6px;
+  --el-border-radius-round: 20px;
+
+  --page-bg: #f4f9f7;
+}
+
 body {
   height: 100%;
   margin: 0;
+  background: var(--page-bg, #f4f9f7);
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
   font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+}
+
+#app {
+  height: 100%;
+  background: var(--page-bg, #f4f9f7);
+}
+
+/* 主内容区柔和背景（覆盖 RuoYi 默认 #f0f2f5） */
+.app-main {
+  background: var(--page-bg, #f4f9f7) !important;
+}
+
+/* 卡片/面板统一柔和化 */
+.el-card {
+  border-radius: 14px;
+  border: 1px solid #edf3f0;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+
+.el-table {
+  --el-table-header-bg-color: #f7fbf9;
+  --el-table-row-hover-bg-color: #f2f9f7;
+}
+
+.el-table th.el-table__cell {
+  color: #3d4a46;
+  font-weight: 600;
+}
+
+/* 搜索表单区域柔和卡片 */
+.app-search {
+  margin-bottom: 12px;
+  padding: 18px 20px 0;
+  background: #ffffff;
+  border: 1px solid #edf3f0;
+  border-radius: 14px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+}
+
+.app-container {
+  padding: 12px 16px;
+  background: transparent;
+}
+
+/* 标签栏柔和 */
+.tags-view-item {
+  border-radius: 8px !important;
+}
+
+/* 弹窗/抽屉圆角 */
+.el-dialog {
+  border-radius: 16px;
+}
+
+.el-drawer {
+  border-radius: 16px 0 0 16px;
 }
 
 label {
