@@ -1,21 +1,31 @@
 <template>
   <div class="app-container">
     <el-form :model="queryParams" ref="queryRef" :inline="true" v-show="showSearch" label-width="68px">
-      <el-form-item label="会员ID" prop="memberId">
-        <el-input
+      <el-form-item label="会员" prop="memberId">
+        <el-select
           v-model="queryParams.memberId"
-          placeholder="请输入会员ID"
+          placeholder="搜索会员姓名"
           clearable
+          filterable
+          remote
+          :remote-method="searchMember"
+          :loading="memberLoading"
+          style="width: 180px"
           @keyup.enter="handleQuery"
-        />
+        >
+          <el-option v-for="item in memberOptions" :key="item.id" :label="item.name + '（' + item.phone + '）'" :value="item.id" />
+        </el-select>
       </el-form-item>
-      <el-form-item label="套餐ID" prop="setmealId">
-        <el-input
+      <el-form-item label="套餐" prop="setmealId">
+        <el-select
           v-model="queryParams.setmealId"
-          placeholder="请输入套餐ID"
+          placeholder="请选择体检套餐"
           clearable
-          @keyup.enter="handleQuery"
-        />
+          filterable
+          style="width: 180px"
+        >
+          <el-option v-for="item in setmealOptions" :key="item.id" :label="item.name + '（¥' + item.price + '）'" :value="item.id" />
+        </el-select>
       </el-form-item>
       <el-form-item label="预约日期" prop="appointmentDate">
         <el-date-picker clearable
@@ -26,20 +36,19 @@
         </el-date-picker>
       </el-form-item>
       <el-form-item label="预约时段" prop="appointmentTime">
-        <el-input
-          v-model="queryParams.appointmentTime"
-          placeholder="请输入预约时段"
-          clearable
-          @keyup.enter="handleQuery"
-        />
+        <el-select v-model="queryParams.appointmentTime" placeholder="预约时段" clearable style="width: 140px">
+          <el-option v-for="dict in appointmentTimeOptions" :key="dict.value" :label="dict.label" :value="dict.value" />
+        </el-select>
       </el-form-item>
-      <el-form-item label="预约来源" prop="source">
-        <el-input
-          v-model="queryParams.source"
-          placeholder="请输入预约来源"
-          clearable
-          @keyup.enter="handleQuery"
-        />
+      <el-form-item label="状态" prop="status">
+        <el-select v-model="queryParams.status" placeholder="预约状态" clearable style="width: 140px">
+          <el-option v-for="dict in appointment_status" :key="dict.value" :label="dict.label" :value="dict.value" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="来源" prop="source">
+        <el-select v-model="queryParams.source" placeholder="预约来源" clearable style="width: 140px">
+          <el-option v-for="dict in sourceOptions" :key="dict.value" :label="dict.label" :value="dict.value" />
+        </el-select>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" icon="Search" @click="handleQuery">搜索</el-button>
@@ -91,26 +100,33 @@
 
     <el-table v-loading="loading" :data="appointmentList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" align="center" />
-      <el-table-column label="预约ID" align="center" prop="id" />
-      <el-table-column label="会员ID" align="center" prop="memberId" />
-      <el-table-column label="套餐ID" align="center" prop="setmealId" />
-      <el-table-column label="预约日期" align="center" prop="appointmentDate" width="180">
+      <el-table-column label="预约ID" align="center" prop="id" width="70" />
+      <el-table-column label="会员" align="center" width="150">
+        <template #default="scope">
+          <span>{{ scope.row.memberName || scope.row.memberId }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="体检套餐" align="center" width="160">
+        <template #default="scope">
+          <span>{{ scope.row.setmealName || scope.row.setmealId }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column label="预约日期" align="center" prop="appointmentDate" width="110">
         <template #default="scope">
           <span>{{ parseTime(scope.row.appointmentDate, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="预约时段" align="center" prop="appointmentTime" />
-      <el-table-column label="状态" align="center" prop="status" />
-      <el-table-column label="预约来源" align="center" prop="source" />
-      <el-table-column label="备注" align="center" prop="remark" />
-      <el-table-column label="创建时间" align="center" prop="createTime" width="180">
+      <el-table-column label="预约时段" align="center" prop="appointmentTime" width="90" />
+      <el-table-column label="状态" align="center" prop="status" width="90">
         <template #default="scope">
-          <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
+          <dict-tag :options="appointment_status" :value="scope.row.status" />
         </template>
       </el-table-column>
-      <el-table-column label="更新时间" align="center" prop="updateTime" width="180">
+      <el-table-column label="预约来源" align="center" prop="source" width="90" />
+      <el-table-column label="备注" align="center" prop="remark" show-overflow-tooltip />
+      <el-table-column label="创建时间" align="center" prop="createTime" width="110">
         <template #default="scope">
-          <span>{{ parseTime(scope.row.updateTime, '{y}-{m}-{d}') }}</span>
+          <span>{{ parseTime(scope.row.createTime, '{y}-{m}-{d}') }}</span>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" class-name="small-padding fixed-width">
@@ -120,7 +136,7 @@
         </template>
       </el-table-column>
     </el-table>
-    
+
     <pagination
       v-show="total>0"
       :total="total"
@@ -134,13 +150,32 @@
       <el-form ref="appointmentRef" :model="form" :rules="rules" label-width="100px">
         <el-row>
           <el-col :span="24">
-            <el-form-item label="会员ID" prop="memberId">
-              <el-input v-model="form.memberId" placeholder="请输入会员ID" />
+            <el-form-item label="会员" prop="memberId">
+              <el-select
+                v-model="form.memberId"
+                placeholder="搜索并选择会员"
+                clearable
+                filterable
+                remote
+                :remote-method="searchMember"
+                :loading="memberLoading"
+                style="width: 100%"
+              >
+                <el-option v-for="item in memberOptions" :key="item.id" :label="item.name + '（' + item.phone + '）'" :value="item.id" />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="24">
-            <el-form-item label="套餐ID" prop="setmealId">
-              <el-input v-model="form.setmealId" placeholder="请输入套餐ID" />
+            <el-form-item label="体检套餐" prop="setmealId">
+              <el-select
+                v-model="form.setmealId"
+                placeholder="请选择体检套餐"
+                clearable
+                filterable
+                style="width: 100%"
+              >
+                <el-option v-for="item in setmealOptions" :key="item.id" :label="item.name + '（¥' + item.price + '）'" :value="item.id" />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="24">
@@ -149,23 +184,35 @@
                 v-model="form.appointmentDate"
                 type="date"
                 value-format="YYYY-MM-DD"
-                placeholder="请选择预约日期">
+                placeholder="请选择已放号的预约日期"
+                style="width: 100%">
               </el-date-picker>
             </el-form-item>
           </el-col>
           <el-col :span="24">
             <el-form-item label="预约时段" prop="appointmentTime">
-              <el-input v-model="form.appointmentTime" placeholder="请输入预约时段" />
+              <el-select v-model="form.appointmentTime" placeholder="请选择预约时段" clearable style="width: 100%">
+                <el-option v-for="dict in appointmentTimeOptions" :key="dict.value" :label="dict.label" :value="dict.value" />
+              </el-select>
+            </el-form-item>
+          </el-col>
+          <el-col :span="24">
+            <el-form-item label="状态" prop="status">
+              <el-select v-model="form.status" placeholder="请选择状态" clearable style="width: 100%">
+                <el-option v-for="dict in appointment_status" :key="dict.value" :label="dict.label" :value="dict.value" />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="24">
             <el-form-item label="预约来源" prop="source">
-              <el-input v-model="form.source" placeholder="请输入预约来源" />
+              <el-select v-model="form.source" placeholder="请选择预约来源" clearable style="width: 100%">
+                <el-option v-for="dict in sourceOptions" :key="dict.value" :label="dict.label" :value="dict.value" />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="24">
             <el-form-item label="备注" prop="remark">
-              <el-input v-model="form.remark" placeholder="请输入备注" />
+              <el-input v-model="form.remark" placeholder="请输入备注" type="textarea" :rows="2" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -182,8 +229,11 @@
 
 <script setup name="Appointment">
 import { listAppointment, getAppointment, delAppointment, addAppointment, updateAppointment } from "@/api/reservation/appointment"
+import { listMember } from "@/api/member/member"
+import { listSetmeal } from "@/api/reservation/setmeal"
 
 const { proxy } = getCurrentInstance()
+const { appointment_status } = proxy.useDict('appointment_status')
 
 const appointmentList = ref([])
 const open = ref(false)
@@ -194,6 +244,37 @@ const single = ref(true)
 const multiple = ref(true)
 const total = ref(0)
 const title = ref("")
+
+// 会员远程搜索
+const memberOptions = ref([])
+const memberLoading = ref(false)
+function searchMember(query) {
+  memberLoading.value = true
+  listMember({ pageNum: 1, pageSize: 20, name: query }).then(response => {
+    memberOptions.value = response.rows
+    memberLoading.value = false
+  })
+}
+
+// 套餐下拉
+const setmealOptions = ref([])
+function getSetmealOptions() {
+  listSetmeal({ pageNum: 1, pageSize: 100 }).then(response => {
+    setmealOptions.value = response.rows
+  })
+}
+
+// 时段 / 来源 固定选项
+const appointmentTimeOptions = [
+  { value: '上午', label: '上午' },
+  { value: '下午', label: '下午' },
+  { value: '全天', label: '全天' }
+]
+const sourceOptions = [
+  { value: '线上', label: '线上' },
+  { value: '前台', label: '前台' },
+  { value: '电话', label: '电话' }
+]
 
 const data = reactive({
   form: {},
@@ -209,10 +290,13 @@ const data = reactive({
   },
   rules: {
     memberId: [
-      { required: true, message: "会员ID不能为空", trigger: "blur" }
+      { required: true, message: "请选择会员", trigger: "change" }
+    ],
+    setmealId: [
+      { required: true, message: "请选择体检套餐", trigger: "change" }
     ],
     appointmentDate: [
-      { required: true, message: "预约日期不能为空", trigger: "blur" }
+      { required: true, message: "请选择预约日期", trigger: "change" }
     ],
   }
 })
@@ -330,5 +414,8 @@ function handleExport() {
   }, `appointment_${new Date().getTime()}.xlsx`)
 }
 
+// 初始化：加载会员与套餐下拉 + 列表
+searchMember('')
+getSetmealOptions()
 getList()
 </script>
