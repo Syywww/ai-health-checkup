@@ -1,5 +1,5 @@
 <p align="center">
-	<h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">AIczjk 体检预约管理系统</h1>
+	<h1 align="center" style="margin: 30px 0 30px; font-weight: bold;">智康体检预约系统</h1>
 	<h4 align="center">基于 RuoYi-Vue 3.9.2 前后端分离的体检预约 + AI 助手系统</h4>
 </p>
 
@@ -60,7 +60,7 @@ WHERE id = #{id} AND reserved_count < max_count
 ## 目录结构
 
 ```
-AIczjk/
+ai-health-checkup/
 ├── health/                  # 后端（Maven 多模块，RuoYi-Vue 3.9.2）
 │   ├── health-admin/        #   Web 入口模块
 │   ├── health-ai/           #   AI 助手（会话/消息）
